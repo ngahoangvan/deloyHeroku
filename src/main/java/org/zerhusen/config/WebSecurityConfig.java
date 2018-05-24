@@ -118,7 +118,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .ignoring()
             .antMatchers(HttpMethod.POST,
-                "/api/contact")
+                "/api/contact", "/api/register")
             // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
             .and()
             .ignoring()
