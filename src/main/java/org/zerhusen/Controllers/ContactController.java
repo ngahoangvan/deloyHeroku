@@ -17,7 +17,7 @@ public class ContactController {
         return contactRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/new")
     public void createContact(@RequestBody Contact contact){
         contactRepository.save(contact);
     }
