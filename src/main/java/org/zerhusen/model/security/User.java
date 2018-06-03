@@ -14,13 +14,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USER", schema = "public")
 public class User implements Serializable{
 
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "user_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
     private Long id;
 
@@ -49,7 +49,7 @@ public class User implements Serializable{
     @Size(min = 4, max = 50)
     private String email;
 
-    @Column(name = "ENABLED", insertable = false)
+    @Column(name = "ENABLED", columnDefinition="boolean default true")
     @NotNull
     private Boolean enabled;
 
