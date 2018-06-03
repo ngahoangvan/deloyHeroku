@@ -112,6 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/**/*.html",
                 "/**/*.css",
                 "/**/*.js",
+                "/images/**/*",
                 "/api/**"
             )
             .and()
