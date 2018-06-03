@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.zerhusen.Entities.PauEntities.News;
 import org.zerhusen.Repositories.PauRepositories.NewsRepository;
@@ -18,6 +19,7 @@ public class NewsController {
     private NewsRepository newsRepository;
 
     @GetMapping
+//    @PreAuthorize("hasRole('ADMIN')")
     public Iterable<News> getAllNews(){
         return newsRepository.findAll(new Sort(Sort.Direction.DESC, "idNews"));
     }
