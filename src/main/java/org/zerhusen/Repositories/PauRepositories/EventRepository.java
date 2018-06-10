@@ -15,4 +15,8 @@ public interface EventRepository extends JpaRepository<Events,Integer>, PagingAn
         "FROM mydb.events\n" +
         "where month(create_at) = :month", nativeQuery = true)
     Iterable<Events> getEventMonth(@Param("month") int month);
+
+    @Query(value = "SELECT image FROM events where id_event = :idEvent", nativeQuery = true)
+    String findImageEvent(@Param("idEvent")Integer idEvent);
+
 }

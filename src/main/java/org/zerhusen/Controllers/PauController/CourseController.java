@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.Optional;
 
 
 @RestController
@@ -100,20 +101,20 @@ public class CourseController {
 
     @PutMapping("/update")
     public void updateCourse(@RequestBody Course course){
-        String oldCourse = courseRepository.findImageCourse(course.getIdCourse());
-        String nameOldImage = oldCourse.substring(14, oldCourse.length()-4);
+        Optional<Course> oldCourse = courseRepository.findById(course.getIdCourse());
         try
         {
-            if (course.getImage() == null || course.getImage().equals("")|| course.getImage().equals(UtilBase64Image.encoder("./src/main/resources/static/images/trainer/default.jpg"))){
-                course.setImage("/images/course/default.jpg");
+            if (course.getImage() == null || course.getImage().equals("") || course.getImage().equals(UtilBase64Image.encoder("./src/main/resources/static/images/trainer/default.jpg"))){
+                course.setImage(oldCourse.get().getImage());
             }else {
-                Files.deleteIfExists(Paths.get("./src/main/resources/static/images/course/" + nameOldImage + ".jpg"));
-                int nameImage = (int) (new Date().getTime()/1000);
+                if (!oldCourse.get().getImage().equals("/images/course/default.jpg"))
+                    Files.deleteIfExists(Paths.get("./src/main/resources/static" + oldCourse.get().getImage()));
+                int nameImage = (int) (new Date().getTime() / 1000);
                 String path = "./src/main/resources/static/images/course/" + nameImage + ".jpg";
                 UtilBase64Image.decoder(course.getImage(), path);
-                course.setImage("/images/course/"+nameImage+".jpg");
-                courseRepository.save(course);
+                course.setImage("/images/course/" + nameImage + ".jpg");
             }
+            courseRepository.save(course);
         }
         catch(NoSuchFileException e)
         {
@@ -131,6 +132,21 @@ public class CourseController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Course> deleteCourse(@PathVariable int id){
+        try {
+            Optional<Course> oldCourse = courseRepository.findById(id);
+            Files.deleteIfExists(Paths.get("./src/main/resources/static" + oldCourse.get().getImage()));
+        } catch(NoSuchFileException e)
+        {
+            System.out.println("No such file/directory exists");
+        }
+        catch(DirectoryNotEmptyException e)
+        {
+            System.out.println("Directory is not empty.");
+        }
+        catch(IOException e)
+        {
+            System.out.println("Invalid permissions.");
+        }
         courseRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

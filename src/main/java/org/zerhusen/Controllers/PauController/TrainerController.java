@@ -116,20 +116,20 @@ public class TrainerController {
 
     @PutMapping("/update")
     public void updateTrainer(@RequestBody Trainer trainer){
-        String oldTrainer = trainerRepository.findImageTrainer(trainer.getIdTrainer());
-        String nameOldImage = oldTrainer.substring(15, oldTrainer.length()-4);
+        Optional<Trainer> oldTrainer = trainerRepository.findById(trainer.getIdTrainer());
         try
         {
             if (trainer.getImage() == null || trainer.getImage().equals("") || trainer.getImage().equals(UtilBase64Image.encoder("./src/main/resources/static/images/trainer/default.jpg"))){
-                trainer.setImage("/images/trainer/default.jpg");
+                trainer.setImage(oldTrainer.get().getImage());
             }else {
-            Files.deleteIfExists(Paths.get("./src/main/resources/static/images/trainer/" + nameOldImage + ".jpg"));
-            int nameImage = (int) (new Date().getTime()/1000);
-            String path = "./src/main/resources/static/images/trainer/" + nameImage + ".jpg";
-            UtilBase64Image.decoder(trainer.getImage(), path);
-            trainer.setImage("/images/trainer/"+nameImage+".jpg");
-            trainerRepository.save(trainer);
+                if (!oldTrainer.get().getImage().equals("/images/trainer/default.jpg"))
+                    Files.deleteIfExists(Paths.get("./src/main/resources/static" + oldTrainer.get().getImage()));
+                int nameImage = (int) (new Date().getTime() / 1000);
+                String path = "./src/main/resources/static/images/trainer/" + nameImage + ".jpg";
+                UtilBase64Image.decoder(trainer.getImage(), path);
+                trainer.setImage("/images/trainer/" + nameImage + ".jpg");
             }
+            trainerRepository.save(trainer);
         }
         catch(NoSuchFileException e)
         {
@@ -148,8 +148,23 @@ public class TrainerController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteTrainer(@PathVariable int id){
-            trainerRepository.deleteById(id);
-            return ResponseEntity.ok().build();
+        try {
+            Optional<Trainer> oldTrainer = trainerRepository.findById(id);
+            Files.deleteIfExists(Paths.get("./src/main/resources/static" + oldTrainer.get().getImage()));
+        } catch(NoSuchFileException e)
+        {
+            System.out.println("No such file/directory exists");
+        }
+        catch(DirectoryNotEmptyException e)
+        {
+            System.out.println("Directory is not empty.");
+        }
+        catch(IOException e)
+        {
+            System.out.println("Invalid permissions.");
+        }
+        trainerRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
 
