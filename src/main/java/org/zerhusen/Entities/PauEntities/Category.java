@@ -36,26 +36,6 @@ public class Category implements Serializable {
     @Column(name = "id_group_category")
     private int idGroupCategory;
 
-
-    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "category_id_category",referencedColumnName ="id_category" )
-    private Set<Trainer> listTrainer=new HashSet<>();
-
-
-    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "category_id_category",referencedColumnName ="id_category" )
-    private Set<Course> listCourse=new HashSet<>();
-
-
-    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "category_id_category",referencedColumnName ="id_category" )
-    private Set<News> ListNews= new HashSet<>();
-
-    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "category_id_category", referencedColumnName = "id_category")
-    private Set<Events> ListEvent = new HashSet<>();
-
-
     public Category() {
     }
 
@@ -97,38 +77,6 @@ public class Category implements Serializable {
 
     public void setIdGroupCategory(int idGroupCategory) {
         this.idGroupCategory = idGroupCategory;
-    }
-
-    public Set<Events> getListEvent() {
-        return ListEvent;
-    }
-
-    public void setListEvent(Set<Events> listEvent) {
-        ListEvent = listEvent;
-    }
-
-    public Set<News> getListNews() {
-        return ListNews;
-    }
-
-    public void setListNews(Set<News> listNews) {
-        ListNews = listNews;
-    }
-
-    public Set<Course> getListCourse() {
-        return listCourse;
-    }
-
-    public void setListCourse(Set<Course> listCourse) {
-        this.listCourse = listCourse;
-    }
-
-    public Set<Trainer> getListTrainer() {
-        return listTrainer;
-    }
-
-    public void setListTrainer(Set<Trainer> listTrainer) {
-        this.listTrainer = listTrainer;
     }
 
     public String getLinks() {
